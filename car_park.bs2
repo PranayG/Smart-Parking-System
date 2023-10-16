@@ -1,0 +1,262 @@
+' {$STAMP BS2}
+' {$PBASIC 2.5}
+' {$PORT COM7}
+
+ir1 VAR Bit
+ir2 VAR Bit
+i VAR Byte
+j VAR Byte
+k VAR Byte
+
+p VAR Byte
+
+a VAR Byte
+b VAR Byte
+c VAR Byte
+
+x VAR Byte
+y VAR Byte
+z VAR Byte
+
+l VAR Byte
+m VAR Byte
+n VAR Byte
+
+us1 VAR Bit
+us2 VAR Bit
+us3 VAR Bit
+us4 VAR Bit
+
+counter VAR Bit
+counter = 0
+
+start:
+DO
+  us1 = IN15
+  us2 = IN14
+  us3 = IN11
+  us4 = IN8
+  FREQOUT 8, 1, 38500
+  ir1 = IN9
+  FREQOUT 9, 1, 38500
+  ir2 = IN10
+  IF (ir1 =0 AND ir2 =0) THEN
+    DEBUG HOME, ? ir1
+    DEBUG LF, ? ir2
+    PULSOUT 12, 850
+    PULSOUT 13, 650
+    PAUSE 70
+    GOTO start
+  ELSEIF (ir1 =0 AND ir2 =1) THEN
+    DEBUG HOME, ? ir1
+    DEBUG LF, ? ir2
+    PULSOUT 12, 850
+    PULSOUT 13, 850
+    PAUSE 70
+    GOTO start
+  ELSEIF (ir1 =1 AND ir2 =0) THEN
+    DEBUG HOME, ? ir1
+    DEBUG LF, ? ir2
+    PULSOUT 12, 650
+    PULSOUT 13, 650
+    PAUSE 70
+    GOTO start
+  ELSEIF (ir1 =1 AND ir2 =1) THEN
+    counter = 0
+    DEBUG LF, ? us1
+    DEBUG LF, ? us2
+    DEBUG LF, ? us3
+    DEBUG LF, ? us4
+    DEBUG LF, ? counter
+    IF (us1 = 1 AND us2 = 0 AND us3 = 0 AND us4 = 0)THEN
+    GOTO parking1
+    ELSEIF (us1 = 0 AND us2 = 1 AND us3 = 0 AND us4 = 0)THEN
+    GOTO parking2
+    ELSEIF (us1 = 0 AND us2 = 0 AND us3 = 1 AND us4 = 0)THEN
+    GOTO parking3
+    ELSEIF (us1 = 0 AND us2 = 0 AND us3 = 0 AND us4 = 1)THEN
+    GOTO parking4
+    ENDIF
+  ENDIF
+LOOP
+
+parking1:  ' Going to parking spot 1
+FOR i = 1 TO 15
+  DEBUG LF, ? i
+  PULSOUT 12, 850
+  PULSOUT 13, 650
+  PAUSE 70
+NEXT
+
+FOR j = 1 TO 15
+  DEBUG LF, ? j
+  PULSOUT 12, 850
+  PULSOUT 13, 850
+  PAUSE 70
+NEXT
+
+FOR k = 1 TO 10
+  DEBUG LF, ? k
+  PULSOUT 12, 850
+  PULSOUT 13, 650
+  PAUSE 70
+NEXT
+GOTO finish
+
+parking2:   'Going to parking spot 2
+FOR i = 1 TO 15
+  DEBUG LF, ? i
+  PULSOUT 12, 850
+  PULSOUT 13, 650
+  PAUSE 70
+NEXT
+
+FOR j = 1 TO 13
+  DEBUG LF, ? j
+  PULSOUT 12, 650
+  PULSOUT 13, 650
+  PAUSE 70
+NEXT
+
+FOR k = 1 TO 10
+  DEBUG LF, ? k
+  PULSOUT 12, 850
+  PULSOUT 13, 650
+  PAUSE 70
+NEXT
+GOTO finish
+
+parking3: 'Going to parking spot 3
+DO
+  FREQOUT 8, 1, 38500
+  ir1 = IN9
+  FREQOUT 9, 1, 38500
+  ir2 = IN10
+  IF(ir1 = 1 AND ir2 = 1 AND counter = 0)THEN
+    FOR p = 1 TO 4
+      DEBUG HOME, ? counter
+      PULSOUT 12, 850
+      PULSOUT 13, 650
+      PAUSE 70
+      DEBUG CLS
+      GOTO parking3
+    NEXT
+
+  ELSEIF(ir1 = 0 AND ir2 = 0)THEN
+    counter = 1
+    DEBUG HOME, ? counter
+    DEBUG CLS
+    PULSOUT 12, 850
+    PULSOUT 13, 650
+    PAUSE 70
+    GOTO parking3
+
+  ELSEIF(ir1 = 1 AND ir2 = 0)THEN
+    counter = 1
+    DEBUG HOME, ? counter
+    DEBUG CLS
+    PULSOUT 12, 650
+    PULSOUT 13, 650
+    PAUSE 70
+    GOTO parking3
+
+  ELSEIF(ir1 = 0 AND ir2 = 1)THEN
+    counter = 1
+    DEBUG HOME, ? counter
+    DEBUG CLS
+    PULSOUT 12, 850
+    PULSOUT 13, 850
+    PAUSE 70
+    GOTO parking3
+
+  ELSEIF(ir1 = 1 AND ir2 = 1 AND counter = 1)THEN
+    DEBUG HOME, ? counter
+    DEBUG LF, ? ir1
+    DEBUG LF, ? ir2
+    FOR i = 1 TO 12
+      DEBUG LF, ? i
+      PULSOUT 12, 850
+      PULSOUT 13, 650
+      PAUSE 70
+    NEXT
+
+    FOR j = 1 TO 12
+      DEBUG LF, ? j
+      PULSOUT 12, 850
+      PULSOUT 13, 850
+      PAUSE 70
+    NEXT
+
+    FOR k = 1 TO 12
+      DEBUG LF, ? k
+      PULSOUT 12, 850
+      PULSOUT 13, 650
+      PAUSE 70
+    NEXT
+    GOTO finish
+  ENDIF
+LOOP
+
+parking4: 'Going to parking spot 4
+DEBUG CLS
+DEBUG LF, "P4"
+DEBUG LF, ? counter
+DO
+  FREQOUT 8, 1, 38500
+  ir1 = IN9
+  FREQOUT 9, 1, 38500
+  ir2 = IN10
+  IF(ir1 = 1 AND ir2 = 1 AND counter = 0)THEN
+    FOR p = 1 TO 4
+      PULSOUT 12, 850
+      PULSOUT 13, 650
+      PAUSE 70
+      GOTO parking4
+    NEXT
+
+  ELSEIF(ir1 = 0 AND ir2 = 0)THEN
+    counter = 1
+    PULSOUT 12, 850
+    PULSOUT 13, 650
+    PAUSE 70
+    GOTO parking4
+
+  ELSEIF(ir1 = 1 AND ir2 = 0)THEN
+    counter = 1
+    PULSOUT 12, 650
+    PULSOUT 13, 650
+    PAUSE 70
+    GOTO parking4
+
+  ELSEIF(ir1 = 0 AND ir2 = 1)THEN
+    counter = 1
+    PULSOUT 12, 850
+    PULSOUT 13, 850
+    PAUSE 70
+    GOTO parking4
+
+  ELSEIF(ir1 = 1 AND ir2 = 1 AND counter = 1)THEN
+    FOR i = 1 TO 12
+      PULSOUT 12, 850
+      PULSOUT 13, 650
+      PAUSE 70
+    NEXT
+
+    FOR j = 1 TO 12
+      PULSOUT 12, 650
+      PULSOUT 13, 650
+      PAUSE 70
+    NEXT
+
+    FOR k = 1 TO 12
+      PULSOUT 12, 850
+      PULSOUT 13, 650
+      PAUSE 70
+    NEXT
+    GOTO finish
+  ENDIF
+LOOP
+
+finish:
+DEBUG "Finish"
+counter = 0
